@@ -1,8 +1,11 @@
 package com.baizhi.controller;
 
+import com.baizhi.dto.PageDTO;
 import com.baizhi.entity.Admin;
 import com.baizhi.service.AdminService;
 import com.baizhi.util.ImageCodeUtil;
+import com.baizhi.vo.CommonQueryPageVO;
+import com.baizhi.vo.CommonVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +53,29 @@ public class AdminController {
         //移除用户登录标记
         request.getServletContext().removeAttribute("admin");
     }
-
+    //分页查询
+    @PostMapping("queryAllPage")
+    public CommonQueryPageVO queryAllPage(@RequestBody PageDTO pageDTO){
+        log.info("当前页：{}",pageDTO.getPage());
+        log.info("每页展示条数:{}",pageDTO.getPageSize());
+        //调用业务
+        CommonQueryPageVO commonQueryPageVO = adminService.queryAllPage(pageDTO.getPage(), pageDTO.getPageSize());
+        return commonQueryPageVO;
+    }
+    //修改状态
+    @PostMapping("update")
+    public CommonVO update(@RequestBody Admin admin){
+        log.info("修改用户状态：{}",admin);
+        //调用业务
+        CommonVO commonVO = adminService.update(admin);
+        return commonVO;
+    }
+    //删除管理员数据
+    @RequestMapping("delete")
+    public HashMap<String,Object>delete(@RequestBody Admin admin){
+        log.info("删除管理员数据:{}",admin);
+        HashMap <String, Object> map = adminService.delete(admin);
+        return map;
+    }
 
 }
