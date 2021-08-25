@@ -56,7 +56,7 @@
         <!--生成对应表及类名-->
 <!--        <table tableName="yx_feedback" domainObjectName="Feedback" ></table>-->
 <!--        <table tableName="yx_user" domainObjectName="User" />-->
-
+<!--        <table tableName="yx_admin" domainObjectName="Admin" ></table>-->
 
     </context>
 </generatorConfiguration>

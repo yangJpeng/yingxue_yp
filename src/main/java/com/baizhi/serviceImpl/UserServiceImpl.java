@@ -51,4 +51,17 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
+    @Override
+    public HashMap <String, Object> delete(User user) {
+        HashMap <String, Object> hashMap = new HashMap <>();
+        try {
+            userMapper.delete(user);
+            hashMap.put("message","删除成功！！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            hashMap.put("message","删除失败!!");
+        }
+        return hashMap;
+    }
+
 }

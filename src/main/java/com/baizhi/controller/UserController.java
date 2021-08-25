@@ -2,13 +2,10 @@ package com.baizhi.controller;
 
 import com.baizhi.entity.User;
 import com.baizhi.service.UserService;
-import com.baizhi.serviceImpl.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
-import java.awt.print.Pageable;
 import java.util.HashMap;
 @CrossOrigin
 @RestController
@@ -31,6 +28,13 @@ public class UserController {
         log.info("修改用户数据：{}",user);
         HashMap <String, Object> hashMap = userService.update(user);
         return hashMap;
+    }
+    //删除
+    @RequestMapping("delete")
+    public HashMap<String,Object>delete(@RequestBody User user){
+        log.info("删除用户数据:{}",user);
+        HashMap <String, Object> map = userService.delete(user);
+        return map;
     }
 
 }

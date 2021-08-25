@@ -37,4 +37,5 @@ public class User {
     private String sex;
 
     private String city;
+    private String score;
 }
