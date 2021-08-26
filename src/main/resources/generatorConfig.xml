@@ -57,6 +57,7 @@
 <!--        <table tableName="yx_feedback" domainObjectName="Feedback" ></table>-->
 <!--        <table tableName="yx_user" domainObjectName="User" />-->
 <!--        <table tableName="yx_admin" domainObjectName="Admin" ></table>-->
+<!--        <table tableName="yx_category" domainObjectName="Category" ></table>-->
 
     </context>
 </generatorConfiguration>

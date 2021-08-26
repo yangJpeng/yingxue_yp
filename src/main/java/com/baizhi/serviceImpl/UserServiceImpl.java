@@ -1,9 +1,9 @@
 package com.baizhi.serviceImpl;
 
 import com.baizhi.dao.UserMapper;
-import com.baizhi.entity.FeedbackExample;
-import com.baizhi.entity.User;
+import com.baizhi.entity.*;
 import com.baizhi.service.UserService;
+import com.baizhi.vo.CommonQueryPageVO;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,5 +63,6 @@ public class UserServiceImpl implements UserService {
         }
         return hashMap;
     }
+
 
 }
