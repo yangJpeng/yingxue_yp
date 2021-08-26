@@ -1,9 +1,14 @@
 package com.baizhi.serviceImpl;
 
+import ch.qos.logback.core.db.dialect.DBUtil;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
+import com.baizhi.annotation.AddLog;
 import com.baizhi.dao.AdminMapper;
 import com.baizhi.entity.Admin;
 import com.baizhi.entity.AdminExample;
 import com.baizhi.service.AdminService;
+import com.baizhi.util.Md5Utils;
+import com.baizhi.util.UUIDUtil;
 import com.baizhi.vo.CommonQueryPageVO;
 import com.baizhi.vo.CommonVO;
 import org.apache.ibatis.session.RowBounds;
@@ -41,8 +46,21 @@ public class AdminServerImpl implements AdminService {
             if (admins!=null) {
                 //4.判断用户状态是否正常
                 if (admins.getStatus().equals("1")) {
+                    //md5加密
+                    //1.获取用户注册时的随机盐
+                    String salt = admins.getSalt();
+                    log.info("获取用户注册时的随机盐:{}",salt);
+                    //2.获取用户登录输入的密码
+                    String password = admin.getPassword();
+                    //3.加密
+                    String md5Code = Md5Utils.getMd5Code(salt + password + salt);
+                    log.info("获取用户登录输入的加密密码:{}",md5Code);
+                    //4.比对密码
                     //5.判断密码是否正确
-                    if (admin.getPassword().equals(admins.getPassword())) {
+                    if (md5Code.equals(admins.getPassword())) {
+                        // 存储用户登录标识
+                        request.setAttribute("admin",admins);
+                        log.info("存储用户登录标识:{}",admins);
                         map.put("message",admins);
                         map.put("status",200);
                     } else {
@@ -114,4 +132,38 @@ public class AdminServerImpl implements AdminService {
         }
         return map;
     }
+
+    @AddLog(value = "添加管理员")
+    @Override
+    public CommonVO add(Admin admin) {
+        try {
+            //1.判断该用户是否存在  根据用户名查询用户
+            Admin admins = adminMapper.queryByUsername(admin.getUsername());
+            if (admins==null) {
+                admin.setId(UUIDUtil.getUUID());
+                admin.setStatus("1");
+                //加密
+                //1.获取随机盐
+                String salt = Md5Utils.getSalt(9);
+                //2.获取用户输入的密码
+                log.info("AdminServer获取用户输入的密码:{}",admin.getPassword());
+                //3.密码拼接随机盐加密
+                String md5Code = Md5Utils.getMd5Code(salt + admin.getPassword() + salt);
+                //4.存储随机盐
+                admin.setSalt(salt);
+                admin.setPassword(md5Code);
+                adminMapper.insertSelective(admin);
+            }
+            return CommonVO.success("管理员添加成功！！！！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonVO.faild("管理员添加失败！！！！");
+        }
+    }
+
+    @Override
+    public Admin queryById(String id) {
+        return adminMapper.selectByPrimaryKey(id);
+    }
+
 }

@@ -13,4 +13,7 @@ public interface AdminService {
 
     CommonQueryPageVO queryAllPage(Integer Page,Integer pageSize);
     CommonVO update(Admin admin);
+    CommonVO add(Admin admin);
+
+    Admin queryById(String id);
 }

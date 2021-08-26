@@ -1,5 +1,7 @@
 package com.baizhi.controller;
 
+
+import com.baizhi.dto.CategoryPageDTO;
 import com.baizhi.dto.PageDTO;
 import com.baizhi.entity.Category;
 import com.baizhi.service.CategoryService;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -46,6 +49,22 @@ public class CategoryController {
         log.info("接收的数据category：{}",category);
         return categoryService.update(category);
     }
+
+    @PostMapping("queryTwoPage")
+    public CommonQueryPageVO queryTwoPage(@RequestBody CategoryPageDTO categoryPageDTO){
+        log.info("接收的数据pageDTO：{}",categoryPageDTO);
+        return categoryService.queryTwoPage(categoryPageDTO);
+    }
+
+
+    /**按照级别查询所有类别*/
+    @PostMapping("queryByLevelsCategory")
+    public List<Category> queryByLevelsCategory(Integer levels){
+        log.info("接收的级别数据levels：{}",levels);
+
+        return categoryService.queryByLevelsCategory(levels);
+    }
+
 
 
 }

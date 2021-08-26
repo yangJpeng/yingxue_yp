@@ -1,6 +1,7 @@
 package com.baizhi.serviceImpl;
 
 import com.baizhi.dao.CategoryMapper;
+import com.baizhi.dto.CategoryPageDTO;
 import com.baizhi.dto.PageDTO;
 import com.baizhi.entity.Category;
 import com.baizhi.entity.CategoryExample;
@@ -45,18 +46,25 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CommonVO add(Category category) {
-        CategoryExample example = new CategoryExample();
-        //添加的是一级类别还是二级类别
         try {
+            //添加的是一级类别还是二级类别
+            if(category.getParentId()!=null){
+                //二级类别
+                category.setLevels(2);
+            }else{
+                //一级类别
+                category.setLevels(1);
+            }
+
             category.setId(UUIDUtil.getUUID());
-            //获取级别
-            category.setLevels(1);
+
             //添加数据
             categoryMapper.insertSelective(category);
-            return CommonVO.success("添加成功！！");
+
+            return CommonVO.success("添加成功");
         } catch (Exception e) {
             e.printStackTrace();
-            return CommonVO.faild("添加失败！！！");
+            return CommonVO.faild();
         }
     }
 
@@ -92,6 +100,33 @@ public class CategoryServiceImpl implements CategoryService {
             e.printStackTrace();
             return CommonVO.faild("修改失败！！");
         }
+    }
+
+    @Override
+    public CommonQueryPageVO queryTwoPage(CategoryPageDTO categoryPageDTO) {
+        //创建条件对象
+        CategoryExample example = new CategoryExample();
+        example.createCriteria().andParentIdEqualTo(categoryPageDTO.getCategoryId());
+
+        //根据条件查一级类别的数量  条件  levels=1
+        int total = categoryMapper.selectCountByExample(example);
+
+        RowBounds rowBounds = new RowBounds((categoryPageDTO.getPage() - 1) * categoryPageDTO.getPageSize(), categoryPageDTO.getPageSize());
+
+        //分页查询数据
+        List<Category> categoryList = categoryMapper.selectByExampleAndRowBounds(example, rowBounds);
+
+        return new CommonQueryPageVO(categoryPageDTO.getPage(),total,categoryList);
+    }
+
+    @Override
+    public List <Category> queryByLevelsCategory(Integer levels) {
+        CategoryExample example = new CategoryExample();
+        example.createCriteria().andLevelsEqualTo(levels);
+
+        List<Category> categories = categoryMapper.selectByExample(example);
+
+        return categories;
     }
 
 

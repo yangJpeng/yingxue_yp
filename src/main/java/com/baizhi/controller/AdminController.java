@@ -47,11 +47,12 @@ public class AdminController {
         HashMap <String, Object> map = adminService.login(admin, enCode);
         return map;
     }
-    @PostMapping("logRemove")
+    @PostMapping("logout")
     public void logRemove(HttpServletRequest request){
         log.info("退出登录");
         //移除用户登录标记
         request.getServletContext().removeAttribute("admin");
+
     }
     //分页查询
     @PostMapping("queryAllPage")
@@ -76,6 +77,16 @@ public class AdminController {
         log.info("删除管理员数据:{}",admin);
         HashMap <String, Object> map = adminService.delete(admin);
         return map;
+    }
+    @RequestMapping("add")
+    public CommonVO add(@RequestBody Admin admin){
+        log.info("添加admin:{}",admin);
+        return  adminService.add(admin);
+    }
+    @RequestMapping("queryById")
+    public Admin queryById(String id){
+        log.info("查询管理员id：{}",id);
+        return  adminService.queryById(id);
     }
 
 }
